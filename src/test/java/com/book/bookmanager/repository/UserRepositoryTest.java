@@ -13,7 +13,10 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
@@ -97,7 +100,7 @@ class UserRepositoryTest {
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnorePaths("name")
                 .withMatcher("email", endsWith());
-//
+
 //        ExampleMatcher matcher = ExampleMatcher.matching().withMatcher("email", contains());
         Example<User> example = Example.of(user, matcher);
 
@@ -106,6 +109,62 @@ class UserRepositoryTest {
 
     @Test
     @Order(4)
+    void updateTest() {
+
+        User expect = userRepository.findById(1L).orElseThrow(NullPointerException::new);
+        expect.setEmail("update@gmail.com");
+
+        User actual = userRepository.save(expect);
+
+        assertEquals(expect.getEmail(), actual.getEmail());
+    }
+
+
+    @Test
+    @Order(5)
+    void queryMethodTest() {
+
+        String expectName = "jack";
+        String expectEmail = "jack@naver.com";
+
+        // select
+        assertEquals(expectName, userRepository.findByName("jack").get().getName());
+        assertEquals(expectEmail, userRepository.findByEmail("jack@naver.com").get().getEmail());
+        assertEquals(expectEmail, userRepository.getByEmail("jack@naver.com").get().getEmail());
+        assertEquals(expectEmail, userRepository.readByEmail("jack@naver.com").get().getEmail());
+        assertEquals(expectEmail, userRepository.queryByEmail("jack@naver.com").get().getEmail());
+        assertEquals(expectEmail, userRepository.searchByEmail("jack@naver.com").get().getEmail());
+        assertEquals(expectEmail, userRepository.streamByEmail("jack@naver.com").get().getEmail());
+        assertEquals(expectEmail, userRepository.findUserByEmail("jack@naver.com").get().getEmail());
+
+        // A는 Entity에 정의된 필드가 아니기 때문에 오류 발생
+        // userRepository.findByA("jack@naver.com");
+
+
+        assertEquals(expectName, userRepository.findFirstByName(expectName).get().getName());
+        assertEquals(2, userRepository.findFirst2ByName(expectName).size());
+        assertEquals(expectName, userRepository.findTopByName(expectName).get().getName());
+        assertEquals(2, userRepository.findTop2ByName(expectName).size());
+        assertEquals(expectName, userRepository.findByNameAndEmail(expectName, expectEmail).get().getName());
+        assertEquals(2, userRepository.findByNameOrEmail(expectName,"james@gmail.com").size());
+
+        assertEquals(5, userRepository.findByCreatedAtAfter(LocalDateTime.now().minusDays(1L)).size());
+        assertEquals(5, userRepository.findByCreatedAtBefore(LocalDateTime.now().plusDays(1L)).size());
+        assertEquals(5, userRepository.findByCreatedAtGreaterThan(LocalDateTime.now().minusDays(1L)).size());
+        assertEquals(5, userRepository.findByCreatedAtGreaterThanEqual(LocalDateTime.now().minusDays(1L)).size());
+        assertEquals(3, userRepository.findByIdBetween(1L, 3L).size());
+
+        assertEquals(3, userRepository.findByNameIn(Lists.newArrayList("jack", "dennis")).size());
+        assertEquals(2, userRepository.findByNameLike("%ac%").size());
+        assertEquals(1, userRepository.findByNameStartingWith("d").size());
+        assertEquals(1, userRepository.findByNameEndingWith("s").size());
+        assertEquals(2, userRepository.findByNameContains("ac").size());
+
+
+    }
+
+    @Test
+    @Order(6)
     void deleteTest() {
 
 //        userRepository.deleteAll(userRepository.findAllById(Lists.newArrayList(1L, 3L)));
@@ -113,5 +172,6 @@ class UserRepositoryTest {
 //        userRepository.deleteAll();
         userRepository.deleteAllInBatch();
     }
+
 
 }
