@@ -8,10 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -66,27 +63,16 @@ class UserRepositoryTest {
         userRepository.deleteAll(Lists.newArrayList(expectUser6, expectUser7, expectUser8));
     }
 
-
     @Test
     @Order(2)
-    void pagingTest() {
-        Page<User> users = userRepository.findAll(PageRequest.of(0, 3));
+    void updateTest() {
 
-        /*
-        System.out.println("page : " + users);
-        System.out.println("totalElements : " + users.getTotalElements());
-        System.out.println("totalPages : " + users.getTotalPages());
-        System.out.println("numberOfElements : " + users.getNumberOfElements());
-        System.out.println("sort : " + users.getSort());
-        System.out.println("size : " + users.getSize());
+        User expect = userRepository.findById(1L).orElseThrow(NullPointerException::new);
+        expect.setEmail("update@gmail.com");
 
-        users.getContent().forEach(System.out::println);
-        */
+        User actual = userRepository.save(expect);
 
-        assertEquals(5, users.getTotalElements());
-        assertEquals(2, users.getTotalPages());
-        assertEquals(3, users.getNumberOfElements());
-
+        assertEquals(expect.getEmail(), actual.getEmail());
     }
 
     @Test
@@ -101,34 +87,23 @@ class UserRepositoryTest {
                 .withIgnorePaths("name")
                 .withMatcher("email", endsWith());
 
-//        ExampleMatcher matcher = ExampleMatcher.matching().withMatcher("email", contains());
+//        ExampleMatcher matcher = ExampleMatcher.matching()
+//              .withMatcher("email", contains());
         Example<User> example = Example.of(user, matcher);
 
         userRepository.findAll(example).forEach(System.out::println);
     }
 
+
     @Test
     @Order(4)
-    void updateTest() {
-
-        User expect = userRepository.findById(1L).orElseThrow(NullPointerException::new);
-        expect.setEmail("update@gmail.com");
-
-        User actual = userRepository.save(expect);
-
-        assertEquals(expect.getEmail(), actual.getEmail());
-    }
-
-
-    @Test
-    @Order(5)
     void queryMethodTest() {
 
         String expectName = "jack";
         String expectEmail = "jack@naver.com";
 
         // select
-        assertEquals(expectName, userRepository.findByName("jack").get().getName());
+        assertEquals(expectName, userRepository.findByName(expectName).get(0).getName());
         assertEquals(expectEmail, userRepository.findByEmail("jack@naver.com").get().getEmail());
         assertEquals(expectEmail, userRepository.getByEmail("jack@naver.com").get().getEmail());
         assertEquals(expectEmail, userRepository.readByEmail("jack@naver.com").get().getEmail());
@@ -163,6 +138,35 @@ class UserRepositoryTest {
 
     }
 
+
+    @Test
+    @Order(5)
+    void pagingAndSortingTest() {
+
+        String expectName = "jack";
+
+        Page<User> users = userRepository.findAll(PageRequest.of(0, 3));
+
+        assertEquals(5, users.getTotalElements());
+        assertEquals(2, users.getTotalPages());
+        assertEquals(3, users.getNumberOfElements());
+
+
+        List<User> sort = userRepository.findByName(expectName, getSort());
+
+        assertEquals(5, sort.get(0).getId());
+        assertEquals(4, sort.get(1).getId());
+
+
+        Page<User> page = userRepository.findByName(expectName, PageRequest.of(0, 2, getSort()));
+
+        assertEquals(2, page.getTotalElements());
+        assertEquals(2, page.getContent().size());
+        assertEquals(1, page.getTotalPages());
+
+    }
+
+
     @Test
     @Order(6)
     void deleteTest() {
@@ -174,4 +178,7 @@ class UserRepositoryTest {
     }
 
 
+    private Sort getSort() {
+        return Sort.by(Sort.Order.desc("id"), Sort.Order.asc("email"));
+    }
 }

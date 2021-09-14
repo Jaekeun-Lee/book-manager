@@ -1,6 +1,9 @@
 package com.book.bookmanager.repository;
 
 import com.book.bookmanager.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
@@ -9,7 +12,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByName(String name);
+    List<User> findByName(String name);
 
     // select
     Optional<User> findByEmail(String email);
@@ -22,15 +25,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     // Optional<User> findByA(String email);                        // A는 Entity에 정의된 필드가 아니기 때문에 오류 발생
-
     Optional<User> findFirstByName(String name);
     List<User> findFirst2ByName(String name);
     Optional<User> findTopByName(String name);
     List<User> findTop2ByName(String name);
 
 
-    // Optional<User> findLastByName(String name);               // Last는 정의된 키워드가 아니기 때문에 무시됨.
-
+    // Optional<User> findLastByName(String name);                  // Last는 정의된 키워드가 아니기 때문에 무시됨(=findByName)
     Optional<User> findByNameAndEmail(String name, String email);
     List<User> findByNameOrEmail(String name, String email);
 
@@ -48,4 +49,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByNameContains(String name);
 
 
+    List<User> findByNameOrderByIdDesc(String name);
+    List<User> findByNameOrderByIdDescEmailAsc(String name);
+    List<User> findByName(String name, Sort sort);
+
+
+    Page<User> findByName(String name, Pageable pageable);
 }
