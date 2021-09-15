@@ -1,6 +1,7 @@
 package com.book.bookmanager.repository;
 
-import com.book.bookmanager.domain.User;
+import com.book.bookmanager.domain.user.Gender;
+import com.book.bookmanager.domain.user.User;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -11,12 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.endsWith;
 
 @SpringBootTest
@@ -121,7 +119,7 @@ class UserRepositoryTest {
         assertEquals(expectName, userRepository.findTopByName(expectName).get().getName());
         assertEquals(2, userRepository.findTop2ByName(expectName).size());
         assertEquals(expectName, userRepository.findByNameAndEmail(expectName, expectEmail).get().getName());
-        assertEquals(2, userRepository.findByNameOrEmail(expectName,"james@gmail.com").size());
+        assertEquals(2, userRepository.findByNameOrEmail(expectName, "james@gmail.com").size());
 
         assertEquals(5, userRepository.findByCreatedAtAfter(LocalDateTime.now().minusDays(1L)).size());
         assertEquals(5, userRepository.findByCreatedAtBefore(LocalDateTime.now().plusDays(1L)).size());
@@ -166,9 +164,21 @@ class UserRepositoryTest {
 
     }
 
-
     @Test
     @Order(6)
+    void enumTest() {
+
+        User user = userRepository.findById(1L).orElseThrow(RuntimeException::new);
+        user.setGender(Gender.MALE);
+
+        User save = userRepository.save(user);
+
+        assertEquals("MALE", userRepository.findRowRecord().get("gender"));
+
+    }
+
+    @Test
+    @Order(7)
     void deleteTest() {
 
 //        userRepository.deleteAll(userRepository.findAllById(Lists.newArrayList(1L, 3L)));

@@ -1,11 +1,8 @@
-package com.book.bookmanager.domain;
+package com.book.bookmanager.domain.user;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -25,6 +22,9 @@ public class User {
 
     @NonNull
     private String email;
+
+    @Enumerated(value = EnumType.STRING)
+    private Gender gender;
 
     private LocalDateTime createdAt;
 
