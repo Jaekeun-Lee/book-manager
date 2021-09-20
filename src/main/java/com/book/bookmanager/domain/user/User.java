@@ -1,9 +1,11 @@
 package com.book.bookmanager.domain.user;
 
+import com.book.bookmanager.domain.Auditable;
+import com.book.bookmanager.domain.BaseEntity;
+import com.book.bookmanager.domain.listener.UserEntityListener;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,7 +13,8 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @Entity
-public class User {
+@EntityListeners(value = UserEntityListener.class)
+public class User extends BaseEntity implements Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +29,4 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 }

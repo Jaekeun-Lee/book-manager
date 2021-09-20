@@ -1,4 +1,4 @@
-package com.book.bookmanager.repository;
+package com.book.bookmanager.repository.user;
 
 import com.book.bookmanager.domain.user.Gender;
 import com.book.bookmanager.domain.user.User;
@@ -23,6 +23,7 @@ class UserRepositoryTest {
 
     @Autowired
     UserRepository userRepository;
+
 
     @Test
     @Order(1)
@@ -179,6 +180,23 @@ class UserRepositoryTest {
 
     @Test
     @Order(7)
+    void entityListenerTest() throws InterruptedException {
+
+
+        User user = userRepository.findById(5L).get();
+        user.setName("updateListener");
+
+        Thread.sleep(3000);
+        User update = userRepository.save(user);
+
+        System.out.println(user);
+        System.out.println(update);
+
+    }
+
+
+    @Test
+    @Order(8)
     void deleteTest() {
 
 //        userRepository.deleteAll(userRepository.findAllById(Lists.newArrayList(1L, 3L)));

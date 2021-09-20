@@ -1,4 +1,4 @@
-package com.book.bookmanager.repository;
+package com.book.bookmanager.repository.user;
 
 import com.book.bookmanager.domain.user.User;
 import org.springframework.data.domain.Page;
