@@ -1,7 +1,6 @@
-package com.book.bookmanager.repository.user;
+package com.book.bookmanager.domain.user;
 
-import com.book.bookmanager.domain.user.Gender;
-import com.book.bookmanager.domain.user.User;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -29,9 +28,9 @@ class UserRepositoryTest {
     @Order(1)
     void create() {
 
-        User expectUser6 = new User("alice", "alice@naver.com");
-        User expectUser7 = new User("steve", "steve@naver.com");
-        User expectUser8 = new User("coco", "coco@gmail.com");
+        User expectUser6 = User.builder().name("alice").email("alice@naver.com").build();
+        User expectUser7 = User.builder().name("steve").email("steve@naver.com").build();
+        User expectUser8 = User.builder().name("coco").email("coco@gmail.com").build();
 
         userRepository.save(expectUser6);
         userRepository.saveAll(Lists.newArrayList(expectUser7, expectUser8));
@@ -67,7 +66,7 @@ class UserRepositoryTest {
     void updateTest() {
 
         User expect = userRepository.findById(1L).orElseThrow(NullPointerException::new);
-        expect.setEmail("update@gmail.com");
+        expect.emailUpdate("update@gmail.com");
 
         User actual = userRepository.save(expect);
 
@@ -78,9 +77,10 @@ class UserRepositoryTest {
     @Order(3)
     void queryByExampleTest() {
 
-        User user = new User();
-        user.setName("jack");
-        user.setEmail("naver.com");
+        User user = User.builder()
+                .name("jack")
+                .email("naver.com")
+                .build();
 
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnorePaths("name")
@@ -165,38 +165,9 @@ class UserRepositoryTest {
 
     }
 
+
     @Test
     @Order(6)
-    void enumTest() {
-
-        User user = userRepository.findById(1L).orElseThrow(RuntimeException::new);
-        user.setGender(Gender.MALE);
-
-        User save = userRepository.save(user);
-
-        assertEquals("MALE", userRepository.findRowRecord().get("gender"));
-
-    }
-
-    @Test
-    @Order(7)
-    void entityListenerTest() throws InterruptedException {
-
-
-        User user = userRepository.findById(5L).get();
-        user.setName("updateListener");
-
-        Thread.sleep(3000);
-        User update = userRepository.save(user);
-
-        System.out.println(user);
-        System.out.println(update);
-
-    }
-
-
-    @Test
-    @Order(8)
     void deleteTest() {
 
 //        userRepository.deleteAll(userRepository.findAllById(Lists.newArrayList(1L, 3L)));

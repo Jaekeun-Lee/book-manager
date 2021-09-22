@@ -1,20 +1,15 @@
 package com.book.bookmanager.domain.user;
 
-import com.book.bookmanager.domain.Auditable;
 import com.book.bookmanager.domain.BaseEntity;
-import com.book.bookmanager.domain.listener.UserEntityListener;
 import lombok.*;
 
 import javax.persistence.*;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@RequiredArgsConstructor
-@Data
-@Builder
+@Getter
+@ToString
 @Entity
-@EntityListeners(value = UserEntityListener.class)
-public class User extends BaseEntity implements Auditable {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,4 +24,16 @@ public class User extends BaseEntity implements Auditable {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
+    @Builder
+    public User(@NonNull String name, @NonNull String email, Gender gender) {
+        this.name = name;
+        this.email = email;
+        this.gender = gender;
+    }
+
+    public User emailUpdate(String email) {
+        this.email = email;
+
+        return this;
+    }
 }

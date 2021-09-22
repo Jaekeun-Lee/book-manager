@@ -1,4 +1,4 @@
-package com.book.bookmanager.domain.user;
+package com.book.bookmanager.domain.userhistory;
 
 import com.book.bookmanager.domain.BaseEntity;
 import lombok.*;
@@ -7,11 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Entity
 @NoArgsConstructor
-@Data
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@ToString
+@Entity
 public class UserHistory extends BaseEntity {
 
     @Id
