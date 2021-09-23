@@ -22,7 +22,7 @@ class BookReviewInfoRepositoryTest {
     void crudTest() {
 
         BookReviewInfo expect = BookReviewInfo.builder()
-                .book(createBook())
+                .book(givenBook())
                 .averageReviewScore(4.5f)
                 .reviewCount(2)
                 .build();
@@ -41,12 +41,11 @@ class BookReviewInfoRepositoryTest {
     }
 
 
-    private Book createBook() {
+    private Book givenBook() {
         return bookRepository.save(Book.builder()
                 .name("Test Name")
                 .category("Test Category")
                 .authorId(1L)
-                .publisherId(1L)
                 .build());
     }
 

@@ -2,6 +2,7 @@ package com.book.bookmanager.domain.user;
 
 import com.book.bookmanager.domain.BaseEntity;
 import com.book.bookmanager.domain.listener.UserEntityListener;
+import com.book.bookmanager.domain.review.Review;
 import com.book.bookmanager.domain.userhistory.UserHistory;
 import lombok.*;
 
@@ -33,8 +34,14 @@ public class User extends BaseEntity {
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private List<UserHistory> userHistories = new ArrayList<>();
 
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private List<Review> reviews = new ArrayList<>();
+
     @Builder
     public User(@NonNull String name, @NonNull String email, Gender gender) {
+
         this.name = name;
         this.email = email;
         this.gender = gender;

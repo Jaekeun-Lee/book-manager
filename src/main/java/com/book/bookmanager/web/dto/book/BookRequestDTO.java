@@ -19,7 +19,6 @@ public class BookRequestDTO {
                 .name(name)
                 .category(category)
                 .authorId(authorId)
-                .publisherId(publisherId)
                 .build();
     }
 }
