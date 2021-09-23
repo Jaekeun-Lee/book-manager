@@ -66,7 +66,7 @@ class UserRepositoryTest {
     void updateTest() {
 
         User expect = userRepository.findById(1L).orElseThrow(NullPointerException::new);
-        expect.emailUpdate("update@gmail.com");
+        expect.updateEmail("update@gmail.com");
 
         User actual = userRepository.save(expect);
 
