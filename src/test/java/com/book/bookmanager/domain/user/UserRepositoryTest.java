@@ -58,7 +58,7 @@ class UserRepositoryTest {
         assertEquals(expectUser7.getEmail(), actualUser7.getEmail());
 
         // create() 메소드에서 넣은 데이터 삭제
-        userRepository.deleteAll(Lists.newArrayList(expectUser6, expectUser7, expectUser8));
+//        userRepository.deleteAll(Lists.newArrayList(expectUser6, expectUser7, expectUser8));
     }
 
     @Test

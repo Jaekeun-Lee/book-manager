@@ -1,5 +1,6 @@
 package com.book.bookmanager.domain.book;
 
+import com.book.bookmanager.domain.author.Author;
 import com.book.bookmanager.domain.BaseEntity;
 import com.book.bookmanager.domain.bookreviewinfo.BookReviewInfo;
 import com.book.bookmanager.domain.publisher.Publisher;
@@ -8,9 +9,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @NoArgsConstructor
@@ -27,8 +30,6 @@ public class Book extends BaseEntity {
 
     private String category;
 
-    private Long authorId;
-
     @OneToOne(mappedBy = "book")
     @ToString.Exclude
     private BookReviewInfo bookReviewInfo;
@@ -42,11 +43,20 @@ public class Book extends BaseEntity {
     @ToString.Exclude
     private Publisher publisher;
 
+    @OneToMany
+    @JoinColumn(name = "book_id")
+    @ToString.Exclude
+    private List<BookAndAuthor> bookAndAuthors = new ArrayList<>();
+
+
     @Builder
-    public Book(String name, String category, Long authorId, Publisher publisher) {
+    public Book(String name, String category, Publisher publisher) {
         this.name = name;
         this.category = category;
-        this.authorId = authorId;
         this.publisher = publisher;
+    }
+
+    public void addBookAndAuthors(BookAndAuthor... bookAndAuthors) {
+        Collections.addAll(this.bookAndAuthors, bookAndAuthors);
     }
 }

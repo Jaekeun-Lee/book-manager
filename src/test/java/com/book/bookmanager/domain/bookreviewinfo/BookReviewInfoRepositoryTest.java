@@ -45,7 +45,6 @@ class BookReviewInfoRepositoryTest {
         return bookRepository.save(Book.builder()
                 .name("Test Name")
                 .category("Test Category")
-                .authorId(1L)
                 .build());
     }
 
