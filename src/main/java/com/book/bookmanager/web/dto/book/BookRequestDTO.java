@@ -18,7 +18,6 @@ public class BookRequestDTO {
         return Book.builder()
                 .name(name)
                 .category(category)
-                .authorId(authorId)
                 .build();
     }
 }

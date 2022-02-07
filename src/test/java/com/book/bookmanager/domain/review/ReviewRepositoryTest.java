@@ -65,7 +65,6 @@ class ReviewRepositoryTest {
         return bookRepository.save(Book.builder()
                 .name("Test Book")
                 .category("Test Category")
-                .authorId(1L)
                 .publisher(publisher)
                 .build());
     }
